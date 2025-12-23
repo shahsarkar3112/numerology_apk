@@ -1,0 +1,45 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flet
+
+      - name: Build with Flet
+        uses: flet-dev/flet-action@v0.1.0
+        with:
+          # The name of your main python file
+          main: main.py
+          
+          # The name of the output APK
+          output: numerology_pro.apk
+          
+          # App name displayed on the phone
+          app_name: "Numerology Pro"
+          
+          # App icon (optional, remove if you don't have one)
+          # icon: assets/icon.png 
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: numerology_pro.apk
